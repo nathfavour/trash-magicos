@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vector_math/vector_math_64.dart' as vector;
 
 class DesktopItems extends StatelessWidget {
   const DesktopItems({super.key});
@@ -39,16 +40,50 @@ class _DesktopIcon extends StatefulWidget {
   State<_DesktopIcon> createState() => _DesktopIconState();
 }
 
-class _DesktopIconState extends State<_DesktopIcon> {
-  bool _isHovered = false;
+class _DesktopIconState extends State<_DesktopIcon>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _hoverController;
+  late Animation<double> _elevationAnimation;
+  double _rotateX = 0;
+  double _rotateY = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _hoverController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _elevationAnimation = Tween<double>(begin: 0, end: 8).animate(
+      CurvedAnimation(parent: _hoverController, curve: Curves.easeOutBack),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
+      onEnter: (_) => _hoverController.forward(),
+      onExit: (_) => _hoverController.reverse(),
+      onHover: (event) {
+        setState(() {
+          final size = context.size ?? Size.zero;
+          _rotateX = (event.localPosition.dy - size.height / 2) / 10;
+          _rotateY = (event.localPosition.dx - size.width / 2) / 10;
+        });
+      },
+      child: AnimatedBuilder(
+        animation: _hoverController,
+        builder: (context, child) {
+          return Transform(
+            transform: Matrix4.identity()
+              ..setEntry(3, 2, 0.001)
+              ..rotateX(vector.radians(_rotateX))
+              ..rotateY(vector.radians(_rotateY))
+              ..translate(0.0, 0.0, _elevationAnimation.value),
+            alignment: Alignment.center,
+            child: child,
+          );
+        },
         child: Container(
           decoration: BoxDecoration(
             color: _isHovered ? Colors.white10 : Colors.transparent,

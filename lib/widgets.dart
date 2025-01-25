@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:glassmorphism/glassmorphism.dart';
+import 'package:vector_math/vector_math.dart' as vector;
 
 class TaskBar extends StatelessWidget {
   const TaskBar({super.key});
@@ -36,30 +38,87 @@ class TaskBar extends StatelessWidget {
   }
 }
 
-class Dock extends StatelessWidget {
+class Dock extends StatefulWidget {
   final VoidCallback onStartMenuTap;
 
   const Dock({super.key, required this.onStartMenuTap});
 
   @override
+  _DockState createState() => _DockState();
+}
+
+class _DockState extends State<Dock> with SingleTickerProviderStateMixin {
+  late AnimationController _scaleController;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _scaleController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(parent: _scaleController, curve: Curves.easeOutBack),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scaleController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 500,
-      height: 60,
-      margin: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.black45,
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          DockIcon(icon: Icons.apps, label: 'Apps', onTap: onStartMenuTap),
-          DockIcon(icon: Icons.folder, label: 'Files'),
-          DockIcon(icon: Icons.terminal, label: 'Terminal'),
-          DockIcon(icon: Icons.web, label: 'Browser'),
-          DockIcon(icon: Icons.settings, label: 'Settings'),
-        ],
+    return MouseRegion(
+      onEnter: (_) => _scaleController.forward(),
+      onExit: (_) => _scaleController.reverse(),
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: Transform(
+          transform: Matrix4.identity()
+            ..setEntry(3, 2, 0.001) // perspective
+            ..rotateX(vector.radians(-10)),
+          alignment: Alignment.center,
+          child: GlassmorphicContainer(
+            width: 500,
+            height: 60,
+            borderRadius: 30,
+            blur: 10,
+            alignment: Alignment.bottomCenter,
+            border: 1,
+            linearGradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white.withOpacity(0.1),
+                Colors.white.withOpacity(0.05),
+              ],
+            ),
+            borderGradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white.withOpacity(0.2),
+                Colors.white.withOpacity(0.1),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                DockIcon(
+                    icon: Icons.apps,
+                    label: 'Apps',
+                    onTap: widget.onStartMenuTap),
+                DockIcon(icon: Icons.folder, label: 'Files'),
+                DockIcon(icon: Icons.terminal, label: 'Terminal'),
+                DockIcon(icon: Icons.web, label: 'Browser'),
+                DockIcon(icon: Icons.settings, label: 'Settings'),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -81,30 +140,64 @@ class DockIcon extends StatefulWidget {
   State<DockIcon> createState() => _DockIconState();
 }
 
-class _DockIconState extends State<DockIcon> {
-  bool _isHovered = false;
+class _DockIconState extends State<DockIcon>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _hoverController;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _rotateAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _hoverController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
+      CurvedAnimation(parent: _hoverController, curve: Curves.easeOutBack),
+    );
+    _rotateAnimation = Tween<double>(begin: 0, end: 0.1).animate(
+      CurvedAnimation(parent: _hoverController, curve: Curves.easeOutBack),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              widget.icon,
-              size: _isHovered ? 32 : 28,
-              color: Colors.white,
-            ),
-            if (_isHovered)
-              Text(
-                widget.label,
-                style: const TextStyle(color: Colors.white, fontSize: 12),
+      onEnter: (_) => _hoverController.forward(),
+      onExit: (_) => _hoverController.reverse(),
+      child: AnimatedBuilder(
+        animation: _hoverController,
+        builder: (context, child) {
+          return Transform(
+            transform: Matrix4.identity()
+              ..setEntry(3, 2, 0.001)
+              ..rotateY(vector.radians(_rotateAnimation.value * 30))
+              ..scale(_scaleAnimation.value),
+            alignment: Alignment.center,
+            child: child,
+          );
+        },
+        child: GestureDetector(
+          onTap: widget.onTap,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                widget.icon,
+                size: 28,
+                color: Colors.white,
               ),
-          ],
+              if (_hoverController.value > 0)
+                FadeTransition(
+                  opacity: _hoverController,
+                  child: Text(
+                    widget.label,
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
