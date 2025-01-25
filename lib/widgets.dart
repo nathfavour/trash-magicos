@@ -321,12 +321,14 @@ class StartMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height; // Add this line
+
     return Stack(
       children: [
         // Blur overlay for background
         Positioned.fill(
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+            // Removed duplicated 'filter' argument
             filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
             child: Container(color: Colors.black.withOpacity(0.3)),
           ),
@@ -339,8 +341,7 @@ class StartMenu extends StatelessWidget {
             builder: (context, child) {
               return Container(
                 width: screenWidth * 0.6, // 60% of screen width
-                height:
-                    screenHeight * 0.8 * animation.value, // Responsive height
+                height: screenHeight * 0.8 * animation.value, // Fixed reference
                 decoration: BoxDecoration(
                   color: Colors.black87.withOpacity(0.9),
                   borderRadius: BorderRadius.circular(30),
