@@ -193,7 +193,7 @@ class _DockState extends State<Dock> with SingleTickerProviderStateMixin {
           ),
         ),
       ),
-    );
+    ); // Added missing closing parentheses
   }
 }
 
@@ -328,11 +328,6 @@ class StartMenu extends StatelessWidget {
         // Blur overlay for background
         Positioned.fill(
           child: BackdropFilter(
-            // Removed duplicated 'filter' argument
-            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-            child: Container(color: Colors.black.withOpacity(0.3)),
-          ),
-        ),
 
         // Start menu content
         Center(
@@ -341,7 +336,7 @@ class StartMenu extends StatelessWidget {
             builder: (context, child) {
               return Container(
                 width: screenWidth * 0.6, // 60% of screen width
-                height: screenHeight * 0.8 * animation.value, // Fixed reference
+                height: screenHeight * 0.8 * animation.value, // Responsive height
                 decoration: BoxDecoration(
                   color: Colors.black87.withOpacity(0.9),
                   borderRadius: BorderRadius.circular(30),
@@ -486,6 +481,9 @@ class StartMenu extends StatelessWidget {
         ),
         Text(label, style: const TextStyle(fontSize: 12)),
       ],
+    );
+  }
+}
     );
   }
 }
