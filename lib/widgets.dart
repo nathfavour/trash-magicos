@@ -321,13 +321,17 @@ class StartMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height; // Add this line
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Stack(
       children: [
         // Blur overlay for background
         Positioned.fill(
           child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+            child: Container(color: Colors.black.withOpacity(0.3)),
+          ),
+        ),
 
         // Start menu content
         Center(
@@ -335,12 +339,8 @@ class StartMenu extends StatelessWidget {
             animation: animation,
             builder: (context, child) {
               return Container(
-                width: screenWidth * 0.6, // 60% of screen width
-                height: screenHeight * 0.8 * animation.value, // Responsive height
-                decoration: BoxDecoration(
-                  color: Colors.black87.withOpacity(0.9),
-                width: screenWidth * 0.6, // 60% of screen width
-                height: screenHeight * 0.8 * animation.value, // Responsive height
+                width: screenWidth * 0.6,
+                height: screenHeight * 0.8 * animation.value,
                 decoration: BoxDecoration(
                   color: Colors.black87.withOpacity(0.9),
                   borderRadius: BorderRadius.circular(30),
