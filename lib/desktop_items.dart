@@ -8,7 +8,9 @@ class DesktopItems extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return SingleChildScrollView(
+    return SizedBox(
+      width: screenWidth,
+      height: screenHeight,
       child: Stack(
         children: [
           _buildDesktopIcon(

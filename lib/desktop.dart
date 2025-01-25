@@ -71,62 +71,56 @@ class _DesktopScreenState extends State<DesktopScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      body: Stack(
-        children: [
-          // Apply blur based on _isBlurred state
-          if (_isBlurred)
-            Positioned.fill(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                child: Container(color: Colors.black.withOpacity(0.3)),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              // Desktop background
+              const Positioned.fill(
+                child: DesktopBackground(),
               ),
-            ),
 
-          // Desktop area with animated transitions
-          const Positioned.fill(
-            child: DesktopBackground(),
-          ),
+              // Desktop items with fade
+              AnimatedOpacity(
+                duration: const Duration(milliseconds: 200),
+                opacity: _isStartMenuOpen ? 0.3 : 1.0,
+                child: const DesktopItems(),
+              ),
 
-          // Desktop items
-          AnimatedOpacity(
-            duration: const Duration(milliseconds: 200),
-            opacity: _isBlurred ? 0.3 : 1.0,
-            child: const Positioned.fill(
-              child: DesktopItems(),
-            ),
-          ),
+              // Top taskbar
+              const Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: TaskBar(),
+              ),
 
-          // Top taskbar
-          const Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: TaskBar(),
-          ),
-
-          // Start menu with morphing animation
-          SlideTransition(
-            position: _startMenuOffset,
-            child: _isStartMenuOpen
-                ? StartMenu(
+              // Start menu
+              if (_isStartMenuOpen)
+                Positioned.fill(
+                  child: StartMenu(
                     onClose: _toggleStartMenu,
                     animation: _animationController,
-                  )
-                : Container(),
-          ),
+                  ),
+                ),
 
-          // Dock
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            bottom: _isBlurred ? -60 : 0,
-            left: 0,
-            right: 0,
-            child: Dock(
-              onStartMenuTap: _toggleStartMenu,
-            ),
-          ),
-        ],
+              // Dock
+              Positioned(
+                bottom: _isStartMenuOpen ? -60 : 0,
+                left: 0,
+                right: 0,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  child: Dock(
+                    onStartMenuTap: _toggleStartMenu,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

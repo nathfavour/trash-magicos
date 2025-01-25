@@ -323,46 +323,55 @@ class StartMenu extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return Stack(
-      children: [
-        // Blur overlay for background
-        Positioned.fill(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-            child: Container(color: Colors.black.withOpacity(0.3)),
+    return Material(
+      type: MaterialType.transparency,
+      child: Stack(
+        children: [
+          // Blur overlay
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: Container(color: Colors.black.withOpacity(0.3)),
+            ),
           ),
-        ),
 
-        // Start menu content
-        Center(
-          child: AnimatedBuilder(
-            animation: animation,
-            builder: (context, child) {
-              return Container(
-                width: screenWidth * 0.6,
-                height: screenHeight * 0.8 * animation.value,
-                decoration: BoxDecoration(
-                  color: Colors.black87.withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(
-                    color: Colors.white.withOpacity(0.1),
-                    width: 0.5,
-                  ),
-                ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      _buildSearchBar(),
-                      _buildAppGrid(),
-                      _buildQuickActions(),
-                    ],
-                  ),
-                ),
-              );
-            },
+          // Start menu content
+          Align(
+            alignment: Alignment.center,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: screenWidth * 0.6,
+                maxHeight: screenHeight * 0.8,
+              ),
+              child: AnimatedBuilder(
+                animation: animation,
+                builder: (context, child) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black87.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.1),
+                        width: 0.5,
+                      ),
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _buildSearchBar(),
+                          _buildAppGrid(),
+                          _buildQuickActions(),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
