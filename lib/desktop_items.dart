@@ -5,94 +5,89 @@ class DesktopItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    return SizedBox(
-      width: screenWidth,
-      height: screenHeight,
-      child: Stack(
-        children: [
-          _buildDesktopIcon(
-            context,
-            icon: Icons.brush,
-            label: 'Art Studio',
-            position: Offset(screenWidth * 0.1, screenHeight * 0.2),
-          ),
-          _buildDesktopIcon(
-            context,
-            icon: Icons.music_note,
-            label: 'Music Player',
-            position: Offset(screenWidth * 0.2, screenHeight * 0.6),
-          ),
-          _buildDesktopIcon(
-            context,
-            icon: Icons.gamepad,
-            label: 'Game Hub',
-            position: Offset(screenWidth * 0.3, screenHeight * 0.2),
-          ),
-          _buildDesktopIcon(
-            context,
-            icon: Icons.camera_alt,
-            label: 'Photo Gallery',
-            position: Offset(screenWidth * 0.4, screenHeight * 0.6),
-          ),
-          _buildDesktopIcon(
-            context,
-            icon: Icons.folder,
-            label: 'Projects',
-            position: Offset(screenWidth * 0.25, screenHeight * 0.3),
-          ),
-          _buildDesktopIcon(
-            context,
-            icon: Icons.folder,
-            label: 'Downloads',
-            position: Offset(screenWidth * 0.35, screenHeight * 0.45),
-          ),
-          // Add more desktop items here within screen boundaries
-        ],
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 6,
+        mainAxisSpacing: 20,
+        crossAxisSpacing: 20,
       ),
+      itemCount: _desktopItems.length,
+      itemBuilder: (context, index) {
+        final item = _desktopItems[index];
+        return _DesktopIcon(
+          icon: item.icon,
+          label: item.label,
+          onTap: () {/* Handle tap */},
+        );
+      },
     );
   }
+}
 
-  Widget _buildDesktopIcon(BuildContext context,
-      {required IconData icon,
-      required String label,
-      required Offset position}) {
-    return Positioned(
-      left: position.dx,
-      top: position.dy,
+class _DesktopIcon extends StatefulWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _DesktopIcon({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  State<_DesktopIcon> createState() => _DesktopIconState();
+}
+
+class _DesktopIconState extends State<_DesktopIcon> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
       child: GestureDetector(
-        onDoubleTap: () {
-          // Implement app launch animation or navigation
-        },
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                  // Removed opacity and border for no blur effect
-                  // color: Colors.white.withOpacity(0.2),
-                  // borderRadius: BorderRadius.circular(12),
-                  // border: Border.all(
-                  //   color: Colors.white.withOpacity(0.3),
-                  //   width: 1,
-                  // ),
-                  ),
-              child: Icon(
-                icon,
-                size: 36,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+        onTap: widget.onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            color: _isHovered ? Colors.white10 : Colors.transparent,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                widget.icon,
+                size: 40,
+                color: Colors.white,
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
+              const SizedBox(height: 8),
+              Text(
+                widget.label,
+                style: const TextStyle(color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+}
+
+final _desktopItems = [
+  _DesktopItem(Icons.folder, 'Documents'),
+  _DesktopItem(Icons.folder, 'Downloads'),
+  _DesktopItem(Icons.folder, 'Pictures'),
+  _DesktopItem(Icons.folder, 'Music'),
+  _DesktopItem(Icons.folder, 'Videos'),
+  _DesktopItem(Icons.settings, 'Settings'),
+];
+
+class _DesktopItem {
+  final IconData icon;
+  final String label;
+
+  _DesktopItem(this.icon, this.label);
 }
