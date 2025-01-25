@@ -339,6 +339,10 @@ class StartMenu extends StatelessWidget {
                 height: screenHeight * 0.8 * animation.value, // Responsive height
                 decoration: BoxDecoration(
                   color: Colors.black87.withOpacity(0.9),
+                width: screenWidth * 0.6, // 60% of screen width
+                height: screenHeight * 0.8 * animation.value, // Responsive height
+                decoration: BoxDecoration(
+                  color: Colors.black87.withOpacity(0.9),
                   borderRadius: BorderRadius.circular(30),
                   border: Border.all(
                     color: Colors.white.withOpacity(0.1),
@@ -481,9 +485,6 @@ class StartMenu extends StatelessWidget {
         ),
         Text(label, style: const TextStyle(fontSize: 12)),
       ],
-    );
-  }
-}
     );
   }
 }
