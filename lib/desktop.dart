@@ -62,8 +62,12 @@ class _DesktopScreenState extends State<DesktopScreen>
           ),
 
           // Desktop items
-          const Positioned.fill(
-            child: DesktopItems(),
+          AnimatedOpacity(
+            duration: const Duration(milliseconds: 200),
+            opacity: _isStartMenuOpen ? 0.3 : 1.0,
+            child: const Positioned.fill(
+              child: DesktopItems(),
+            ),
           ),
 
           // Top taskbar
@@ -74,24 +78,23 @@ class _DesktopScreenState extends State<DesktopScreen>
             child: TaskBar(),
           ),
 
-          // Start menu with slide transition
-          SlideTransition(
-            position: _startMenuOffset,
-            child: _isStartMenuOpen
-                ? Positioned(
-                    bottom: 80,
-                    left: 0,
-                    right: 0,
-                    child: StartMenu(
-                      onClose: _toggleStartMenu,
-                    ),
-                  )
-                : Container(),
-          ),
+          // Start menu with morphing animation
+          if (_isStartMenuOpen)
+            Positioned(
+              bottom: 80,
+              left: 0,
+              right: 0,
+              child: StartMenu(
+                onClose: _toggleStartMenu,
+                animation: _animationController,
+              ),
+            ),
 
           // Dock
-          Positioned(
-            bottom: 0,
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            bottom: _isStartMenuOpen ? -60 : 0,
             left: 0,
             right: 0,
             child: Dock(
