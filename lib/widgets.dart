@@ -163,5 +163,51 @@ class StartMenu extends StatelessWidget {
     );
   }
 
-  // ... existing _buildAppGrid and _buildQuickActions methods ...
+  Widget _buildAppGrid() {
+    // Simple placeholder grid
+    return GridView.count(
+      crossAxisCount: 4,
+      shrinkWrap: true,
+      children: [
+        _buildGridIcon(Icons.web, 'Browser'),
+        _buildGridIcon(Icons.folder, 'Files'),
+        // ...add more icons as needed...
+      ],
+    );
+  }
+
+  Widget _buildGridIcon(IconData icon, String label) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, color: Colors.white, size: 32),
+        const SizedBox(height: 4),
+        Text(label, style: const TextStyle(color: Colors.white, fontSize: 12)),
+      ],
+    );
+  }
+
+  Widget _buildQuickActions() {
+    // Simple placeholder row
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildActionIcon(Icons.power_settings_new, 'Power'),
+          const SizedBox(width: 20),
+          _buildActionIcon(Icons.settings, 'Settings'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionIcon(IconData icon, String label) {
+    return Column(
+      children: [
+        Icon(icon, color: Colors.white, size: 28),
+        Text(label, style: const TextStyle(color: Colors.white, fontSize: 12)),
+      ],
+    );
+  }
 }
