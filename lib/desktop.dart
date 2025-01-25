@@ -46,62 +46,58 @@ class _DesktopScreenState extends State<DesktopScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Material(
-        child: Stack(
-          children: [
-            // Background
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Theme.of(context).primaryColor,
-                    Colors.purple[900]!,
-                    Colors.black,
-                  ],
+      body: Stack(
+        children: [
+          // Use a background image
+          Positioned.fill(
+            child: Image.asset(
+              'assets/background3.jpeg',
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          // When Start Menu is open, blur everything except TaskBar & Dock
+          if (_isStartMenuOpen)
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaX: _menuBlurAnimation.value,
+                  sigmaY: _menuBlurAnimation.value,
                 ),
+                child: Container(color: Colors.transparent),
               ),
             ),
 
-            // Desktop Items
-            const Padding(
-              padding:
-                  EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 80),
-              child: DesktopItems(),
+          // Desktop Items
+          const Padding(
+            padding: EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 80),
+            child: DesktopItems(),
+          ),
+
+          // Top Bar
+          const Align(
+            alignment: Alignment.topCenter,
+            child: TaskBar(),
+          ),
+
+          // Start Menu overlay
+          if (_isStartMenuOpen)
+            AnimatedBuilder(
+              animation: _menuController,
+              builder: (context, child) {
+                return ScaleTransition(
+                  scale: _menuScaleAnimation,
+                  child: StartMenu(onClose: _toggleStartMenu),
+                );
+              },
             ),
 
-            // Top Bar
-            const Align(
-              alignment: Alignment.topCenter,
-              child: TaskBar(),
-            ),
-
-            // Animated Start Menu
-            if (_isStartMenuOpen)
-              AnimatedBuilder(
-                animation: _menuController,
-                builder: (context, child) {
-                  return BackdropFilter(
-                    filter: ImageFilter.blur(
-                      sigmaX: _menuBlurAnimation.value,
-                      sigmaY: _menuBlurAnimation.value,
-                    ),
-                    child: ScaleTransition(
-                      scale: _menuScaleAnimation,
-                      child: StartMenu(onClose: _toggleStartMenu),
-                    ),
-                  );
-                },
-              ),
-
-            // Dock
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Dock(onStartMenuTap: _toggleStartMenu),
-            ),
-          ],
-        ),
+          // Dock
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Dock(onStartMenuTap: _toggleStartMenu),
+          ),
+        ],
       ),
     );
   }

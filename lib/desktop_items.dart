@@ -92,10 +92,12 @@ class _DesktopIconState extends State<_DesktopIcon>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                widget.icon,
-                size: 40,
-                color: Colors.white,
+              // Use custom 3D folder icon asset
+              Image.asset(
+                'assets/icons/folder_3d.png',
+                width: 48,
+                height: 48,
+                fit: BoxFit.contain,
               ),
               const SizedBox(height: 8),
               Text(
