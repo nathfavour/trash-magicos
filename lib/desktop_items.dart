@@ -5,36 +5,34 @@ class DesktopItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: Stack(
-        children: [
-          _buildDesktopIcon(
-            context,
-            icon: Icons.brush,
-            label: 'Art Studio',
-            position: Offset(100, 150),
-          ),
-          _buildDesktopIcon(
-            context,
-            icon: Icons.music_note,
-            label: 'Music Player',
-            position: Offset(200, 300),
-          ),
-          _buildDesktopIcon(
-            context,
-            icon: Icons.gamepad,
-            label: 'Game Hub',
-            position: Offset(300, 150),
-          ),
-          _buildDesktopIcon(
-            context,
-            icon: Icons.camera_alt,
-            label: 'Photo Gallery',
-            position: Offset(400, 300),
-          ),
-          // Add more desktop items here
-        ],
-      ),
+    return Stack(
+      children: [
+        _buildDesktopIcon(
+          context,
+          icon: Icons.brush,
+          label: 'Art Studio',
+          position: Offset(100, 150),
+        ),
+        _buildDesktopIcon(
+          context,
+          icon: Icons.music_note,
+          label: 'Music Player',
+          position: Offset(200, 300),
+        ),
+        _buildDesktopIcon(
+          context,
+          icon: Icons.gamepad,
+          label: 'Game Hub',
+          position: Offset(300, 150),
+        ),
+        _buildDesktopIcon(
+          context,
+          icon: Icons.camera_alt,
+          label: 'Photo Gallery',
+          position: Offset(400, 300),
+        ),
+        // Add more desktop items here
+      ],
     );
   }
 
@@ -42,8 +40,7 @@ class DesktopItems extends StatelessWidget {
       {required IconData icon,
       required String label,
       required Offset position}) {
-    return AnimatedPositioned(
-      duration: const Duration(milliseconds: 500),
+    return Positioned(
       left: position.dx,
       top: position.dy,
       child: GestureDetector(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'widgets.dart';
-import 'desktop_items.dart'; // New import for desktop items
+import 'desktop_items.dart'; // Ensure this file exists
 
 class DesktopScreen extends StatefulWidget {
   const DesktopScreen({super.key});
@@ -43,7 +43,9 @@ class _DesktopScreenState extends State<DesktopScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: Theme.of(context)
+          .colorScheme
+          .surface, // Changed from background to surface
       body: Stack(
         children: [
           // Desktop area with animated transitions
@@ -53,7 +55,8 @@ class _DesktopScreenState extends State<DesktopScreen>
 
           // Desktop items
           const Positioned.fill(
-            child: DesktopItems(), // Added desktop items
+            child:
+                DesktopItems(), // Ensure DesktopItems is correctly implemented
           ),
 
           // Top taskbar

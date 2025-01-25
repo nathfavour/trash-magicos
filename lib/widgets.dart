@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // Ensure this import is present
 
 class DesktopBackground extends StatefulWidget {
   const DesktopBackground({super.key});
 
   @override
   State<DesktopBackground> createState() => _DesktopBackgroundState();
-  @override
-  State<DesktopBackground> createState() => _DesktopBackgroundState();
 }
 
-class _DesktopBackgroundState extends State<DesktopBackground> {
+class _DesktopBackgroundState extends State<DesktopBackground>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _colorController;
+  late Animation<Color?> _colorAnimation;
+
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Theme.of(context).primaryColor,
-            Colors.purple[900]!,
-            Colors.black,
+  void initState() {
+    super.initState();
+    _colorController = AnimationController(
+      duration: const Duration(seconds: 10),
+      vsync: this,
+    )..repeat(reverse: true);
+    _colorAnimation = ColorTween(
+      begin: Colors.purple[900],
       end: Colors.red[900],
     ).animate(_colorController);
   }
@@ -34,6 +35,32 @@ class _DesktopBackgroundState extends State<DesktopBackground> {
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
+      animation: _colorAnimation,
+      builder: (context, child) {
+        return Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Theme.of(context).primaryColor,
+                _colorAnimation.value!,
+                Colors.black,
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class TaskBar extends StatefulWidget {
+  const TaskBar({super.key});
+
+  @override
+  _TaskBarState createState() => _TaskBarState();
+}
 
 class _TaskBarState extends State<TaskBar> {
   String _currentTime = '';
@@ -44,7 +71,7 @@ class _TaskBarState extends State<TaskBar> {
     _updateTime();
   }
 
-                Colors.black,
+  void _updateTime() {
     final now = DateTime.now();
     final formattedTime = DateFormat.Hm().format(now);
     setState(() {
@@ -61,13 +88,13 @@ class _TaskBarState extends State<TaskBar> {
       child: Row(
         children: [
           const Spacer(),
-          buildSystemTray(),
+          _buildSystemTray(),
         ],
       ),
     );
   }
 
-  Widget buildSystemTray() {
+  Widget _buildSystemTray() {
     return Row(
       children: [
         Icon(Icons.wifi, size: 16, color: Colors.white),
@@ -117,38 +144,6 @@ class StartMenu extends StatelessWidget {
   final VoidCallback onClose;
 
   const StartMenu({super.key, required this.onClose});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: 400,
-
-        height: 500,
-        decoration: BoxDecoration(
-          color: Colors.black87,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 10,
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.close),
-              title: const Text('Close'),
-              onTap: onClose,
-            ),
-            // Add more menu items here
-          ],
-        ),
-      ),
-    );
-  }
-}
 
   @override
   Widget build(BuildContext context) {
