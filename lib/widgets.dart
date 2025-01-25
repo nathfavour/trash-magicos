@@ -5,6 +5,8 @@ class DesktopBackground extends StatefulWidget {
 
   @override
   State<DesktopBackground> createState() => _DesktopBackgroundState();
+  @override
+  State<DesktopBackground> createState() => _DesktopBackgroundState();
 }
 
 class _DesktopBackgroundState extends State<DesktopBackground> {
@@ -19,15 +21,37 @@ class _DesktopBackgroundState extends State<DesktopBackground> {
             Theme.of(context).primaryColor,
             Colors.purple[900]!,
             Colors.black,
-          ],
-        ),
-      ),
-    );
+      end: Colors.red[900],
+    ).animate(_colorController);
   }
-}
 
-class TaskBar extends StatelessWidget {
-  const TaskBar({super.key});
+  @override
+  void dispose() {
+    _colorController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+
+class _TaskBarState extends State<TaskBar> {
+  String _currentTime = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _updateTime();
+  }
+
+                Colors.black,
+    final now = DateTime.now();
+    final formattedTime = DateFormat.Hm().format(now);
+    setState(() {
+      _currentTime = formattedTime;
+    });
+    Future.delayed(const Duration(minutes: 1), _updateTime);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,20 +61,23 @@ class TaskBar extends StatelessWidget {
       child: Row(
         children: [
           const Spacer(),
-          _buildSystemTray(),
+          buildSystemTray(),
         ],
       ),
     );
   }
 
-  Widget _buildSystemTray() {
+  Widget buildSystemTray() {
     return Row(
       children: [
-        Icon(Icons.wifi, size: 16),
+        Icon(Icons.wifi, size: 16, color: Colors.white),
         SizedBox(width: 8),
-        Icon(Icons.battery_full, size: 16),
+        Icon(Icons.battery_full, size: 16, color: Colors.white),
         SizedBox(width: 8),
-        Text(DateTime.now().toString().substring(11, 16)),
+        Text(
+          _currentTime,
+          style: TextStyle(color: Colors.white),
+        ),
         SizedBox(width: 16),
       ],
     );
@@ -90,6 +117,38 @@ class StartMenu extends StatelessWidget {
   final VoidCallback onClose;
 
   const StartMenu({super.key, required this.onClose});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        width: 400,
+
+        height: 500,
+        decoration: BoxDecoration(
+          color: Colors.black87,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10,
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.close),
+              title: const Text('Close'),
+              onTap: onClose,
+            ),
+            // Add more menu items here
+          ],
+        ),
+      ),
+    );
+  }
+}
 
   @override
   Widget build(BuildContext context) {

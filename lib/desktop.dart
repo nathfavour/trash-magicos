@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'widgets.dart';
+import 'desktop_items.dart'; // New import for desktop items
 
 class DesktopScreen extends StatefulWidget {
   const DesktopScreen({super.key});
@@ -8,18 +9,51 @@ class DesktopScreen extends StatefulWidget {
   State<DesktopScreen> createState() => _DesktopScreenState();
 }
 
-class _DesktopScreenState extends State<DesktopScreen> {
+class _DesktopScreenState extends State<DesktopScreen>
+    with SingleTickerProviderStateMixin {
   bool _isStartMenuOpen = false;
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _toggleStartMenu() {
+    setState(() {
+      _isStartMenuOpen = !_isStartMenuOpen;
+      if (_isStartMenuOpen) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Stack(
         children: [
-          // Desktop area
+          // Desktop area with animated transitions
           const Positioned.fill(
             child: DesktopBackground(),
+          ),
+
+          // Desktop items
+          const Positioned.fill(
+            child: DesktopItems(), // Added desktop items
           ),
 
           // Top taskbar
@@ -30,16 +64,20 @@ class _DesktopScreenState extends State<DesktopScreen> {
             child: TaskBar(),
           ),
 
-          // Start menu
-          if (_isStartMenuOpen)
-            Positioned(
-              bottom: 80,
-              left: 0,
-              right: 0,
-              child: StartMenu(
-                onClose: () => setState(() => _isStartMenuOpen = false),
-              ),
-            ),
+          // Start menu with fade transition
+          FadeTransition(
+            opacity: _animationController,
+            child: _isStartMenuOpen
+                ? Positioned(
+                    bottom: 80,
+                    left: 0,
+                    right: 0,
+                    child: StartMenu(
+                      onClose: _toggleStartMenu,
+                    ),
+                  )
+                : Container(),
+          ),
 
           // Dock
           Positioned(
@@ -47,8 +85,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
             left: 0,
             right: 0,
             child: Dock(
-              onStartMenuTap: () =>
-                  setState(() => _isStartMenuOpen = !_isStartMenuOpen),
+              onStartMenuTap: _toggleStartMenu,
             ),
           ),
         ],
