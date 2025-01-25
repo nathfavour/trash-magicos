@@ -5,33 +5,36 @@ class DesktopItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Stack(
       children: [
         _buildDesktopIcon(
           context,
           icon: Icons.brush,
           label: 'Art Studio',
-          position: Offset(100, 150),
+          position: Offset(screenWidth * 0.1, screenHeight * 0.2),
         ),
         _buildDesktopIcon(
           context,
           icon: Icons.music_note,
           label: 'Music Player',
-          position: Offset(200, 300),
+          position: Offset(screenWidth * 0.2, screenHeight * 0.6),
         ),
         _buildDesktopIcon(
           context,
           icon: Icons.gamepad,
           label: 'Game Hub',
-          position: Offset(300, 150),
+          position: Offset(screenWidth * 0.3, screenHeight * 0.2),
         ),
         _buildDesktopIcon(
           context,
           icon: Icons.camera_alt,
           label: 'Photo Gallery',
-          position: Offset(400, 300),
+          position: Offset(screenWidth * 0.4, screenHeight * 0.6),
         ),
-        // Add more desktop items here
+        // Add more desktop items here within screen boundaries
       ],
     );
   }

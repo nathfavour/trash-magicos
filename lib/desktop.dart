@@ -21,6 +21,8 @@ class _DesktopScreenState extends State<DesktopScreen>
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
+      lowerBound: 0.0,
+      upperBound: 1.0, // Ensure upperBound is set
     );
     _startMenuOffset = Tween<Offset>(
       begin: const Offset(0, 1),
@@ -79,16 +81,15 @@ class _DesktopScreenState extends State<DesktopScreen>
           ),
 
           // Start menu with morphing animation
-          if (_isStartMenuOpen)
-            Positioned(
-              bottom: 80,
-              left: 0,
-              right: 0,
-              child: StartMenu(
-                onClose: _toggleStartMenu,
-                animation: _animationController,
-              ),
-            ),
+          SlideTransition(
+            position: _startMenuOffset,
+            child: _isStartMenuOpen
+                ? StartMenu(
+                    onClose: _toggleStartMenu,
+                    animation: _animationController,
+                  )
+                : Container(),
+          ),
 
           // Dock
           AnimatedPositioned(
