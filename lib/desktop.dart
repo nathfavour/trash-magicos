@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'widgets.dart';
-import 'desktop_items.dart'; // Ensure this file exists
+import 'desktop_items.dart';
 
 class DesktopScreen extends StatefulWidget {
   const DesktopScreen({super.key});
@@ -13,13 +13,23 @@ class _DesktopScreenState extends State<DesktopScreen>
     with SingleTickerProviderStateMixin {
   bool _isStartMenuOpen = false;
   late AnimationController _animationController;
+  late Animation<Offset> _startMenuOffset;
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 500),
       vsync: this,
+    );
+    _startMenuOffset = Tween<Offset>(
+      begin: const Offset(0, 1),
+      end: const Offset(0, 0),
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeOutBack,
+      ),
     );
   }
 
@@ -43,9 +53,7 @@ class _DesktopScreenState extends State<DesktopScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context)
-          .colorScheme
-          .surface, // Changed from background to surface
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Stack(
         children: [
           // Desktop area with animated transitions
@@ -55,8 +63,7 @@ class _DesktopScreenState extends State<DesktopScreen>
 
           // Desktop items
           const Positioned.fill(
-            child:
-                DesktopItems(), // Ensure DesktopItems is correctly implemented
+            child: DesktopItems(),
           ),
 
           // Top taskbar
@@ -67,9 +74,9 @@ class _DesktopScreenState extends State<DesktopScreen>
             child: TaskBar(),
           ),
 
-          // Start menu with fade transition
-          FadeTransition(
-            opacity: _animationController,
+          // Start menu with slide transition
+          SlideTransition(
+            position: _startMenuOffset,
             child: _isStartMenuOpen
                 ? Positioned(
                     bottom: 80,
