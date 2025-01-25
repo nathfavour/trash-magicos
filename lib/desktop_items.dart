@@ -46,6 +46,7 @@ class _DesktopIconState extends State<_DesktopIcon>
   late Animation<double> _elevationAnimation;
   double _rotateX = 0;
   double _rotateY = 0;
+  bool _isHovered = false;
 
   @override
   void initState() {
@@ -62,8 +63,18 @@ class _DesktopIconState extends State<_DesktopIcon>
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      onEnter: (_) => _hoverController.forward(),
-      onExit: (_) => _hoverController.reverse(),
+      onEnter: (_) {
+        setState(() {
+          _isHovered = true;
+          _hoverController.forward();
+        });
+      },
+      onExit: (_) {
+        setState(() {
+          _isHovered = false;
+          _hoverController.reverse();
+        });
+      },
       onHover: (event) {
         setState(() {
           final size = context.size ?? Size.zero;
@@ -110,6 +121,12 @@ class _DesktopIconState extends State<_DesktopIcon>
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _hoverController.dispose();
+    super.dispose();
   }
 }
 
