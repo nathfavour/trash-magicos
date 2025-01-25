@@ -51,7 +51,7 @@ class _DesktopScreenState extends State<DesktopScreen>
           // Use a background image
           Positioned.fill(
             child: Image.asset(
-              'assets/background3.jpeg',
+              'assets/background3.jpg',
               fit: BoxFit.cover,
             ),
           ),
