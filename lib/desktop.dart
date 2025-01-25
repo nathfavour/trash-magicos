@@ -16,6 +16,7 @@ class _DesktopScreenState extends State<DesktopScreen>
   late AnimationController _menuController;
   late Animation<double> _menuScaleAnimation;
   late Animation<double> _menuBlurAnimation;
+  late Animation<double> _menuFadeAnimation;
 
   @override
   void initState() {
@@ -26,6 +27,9 @@ class _DesktopScreenState extends State<DesktopScreen>
     );
     _menuScaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
       CurvedAnimation(parent: _menuController, curve: Curves.easeOutExpo),
+    );
+    _menuFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _menuController, curve: Curves.easeIn),
     );
     _menuBlurAnimation = Tween<double>(begin: 0, end: 10).animate(
       CurvedAnimation(parent: _menuController, curve: Curves.easeOut),
@@ -80,14 +84,17 @@ class _DesktopScreenState extends State<DesktopScreen>
             child: TaskBar(),
           ),
 
-          // Start Menu overlay
+          // Start Menu overlay with fade + scale transitions
           if (_isStartMenuOpen)
             AnimatedBuilder(
               animation: _menuController,
               builder: (context, child) {
-                return ScaleTransition(
-                  scale: _menuScaleAnimation,
-                  child: StartMenu(onClose: _toggleStartMenu),
+                return FadeTransition(
+                  opacity: _menuFadeAnimation,
+                  child: ScaleTransition(
+                    scale: _menuScaleAnimation,
+                    child: StartMenu(onClose: _toggleStartMenu),
+                  ),
                 );
               },
             ),
