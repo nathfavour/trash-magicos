@@ -71,17 +71,19 @@ class DesktopItems extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2), // Glassy effect
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.3),
-                  width: 1,
-                ),
+                  // Removed opacity and border for no blur effect
+                  // color: Colors.white.withOpacity(0.2),
+                  // borderRadius: BorderRadius.circular(12),
+                  // border: Border.all(
+                  //   color: Colors.white.withOpacity(0.3),
+                  //   width: 1,
+                  // ),
+                  ),
+              child: Icon(
+                icon,
+                size: 36,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
               ),
-              child: Icon(icon,
-                  size: 36,
-                  color:
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.8)),
             ),
             const SizedBox(height: 4),
             Text(

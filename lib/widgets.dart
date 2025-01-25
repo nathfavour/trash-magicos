@@ -327,7 +327,7 @@ class StartMenu extends StatelessWidget {
       type: MaterialType.transparency,
       child: Stack(
         children: [
-          // Blur overlay
+          // Blur overlay only when Start Menu is active
           Positioned.fill(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
@@ -335,7 +335,7 @@ class StartMenu extends StatelessWidget {
             ),
           ),
 
-          // Start menu content
+          // Start menu content without additional blur
           Align(
             alignment: Alignment.center,
             child: ConstrainedBox(
