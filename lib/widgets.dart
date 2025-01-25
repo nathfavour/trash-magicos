@@ -71,6 +71,7 @@ class _DockState extends State<Dock> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return MouseRegion(
       onEnter: (_) => _scaleController.forward(),
       onExit: (_) => _scaleController.reverse(),
@@ -78,21 +79,21 @@ class _DockState extends State<Dock> with SingleTickerProviderStateMixin {
         scale: _scaleAnimation,
         child: Transform(
           transform: Matrix4.identity()
-            ..setEntry(3, 2, 0.001) // perspective
+            ..setEntry(3, 2, 0.001)
             ..rotateX(vector.radians(-10)),
           alignment: Alignment.center,
           child: GlassmorphicContainer(
-            width: 500,
-            height: 60,
-            borderRadius: 30,
-            blur: 10,
+            width: size.width * 0.4,
+            height: 70,
+            borderRadius: 35,
+            blur: 15,
             alignment: Alignment.bottomCenter,
-            border: 1,
+            border: 2,
             linearGradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withOpacity(0.1),
+                Colors.white.withOpacity(0.15),
                 Colors.white.withOpacity(0.05),
               ],
             ),
@@ -100,22 +101,34 @@ class _DockState extends State<Dock> with SingleTickerProviderStateMixin {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withOpacity(0.2),
+                Colors.white.withOpacity(0.3),
                 Colors.white.withOpacity(0.1),
               ],
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                DockIcon(
-                    icon: Icons.apps,
-                    label: 'Apps',
-                    onTap: widget.onStartMenuTap),
-                DockIcon(icon: Icons.folder, label: 'Files'),
-                DockIcon(icon: Icons.terminal, label: 'Terminal'),
-                DockIcon(icon: Icons.web, label: 'Browser'),
-                DockIcon(icon: Icons.settings, label: 'Settings'),
-              ],
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(35),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 15,
+                    spreadRadius: -5,
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  DockIcon(
+                      icon: Icons.apps,
+                      label: 'Apps',
+                      onTap: widget.onStartMenuTap),
+                  DockIcon(icon: Icons.folder, label: 'Files'),
+                  DockIcon(icon: Icons.terminal, label: 'Terminal'),
+                  DockIcon(icon: Icons.web, label: 'Browser'),
+                  DockIcon(icon: Icons.settings, label: 'Settings'),
+                ],
+              ),
             ),
           ),
         ),
@@ -211,36 +224,112 @@ class StartMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 600,
-      height: 400,
-      decoration: BoxDecoration(
-        color: Colors.black87,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        children: [
-          _buildSearchBar(),
-          Expanded(child: _buildAppGrid()),
-          _buildQuickActions(),
-        ],
+    final size = MediaQuery.of(context).size;
+    return Center(
+      child: GlassmorphicContainer(
+        width: size.width * 0.7,
+        height: size.height * 0.7,
+        borderRadius: 30,
+        blur: 20,
+        alignment: Alignment.center,
+        border: 2,
+        linearGradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.1),
+            Colors.white.withOpacity(0.05),
+          ],
+        ),
+        borderGradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.2),
+            Colors.white.withOpacity(0.1),
+          ],
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 30,
+                spreadRadius: 5,
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              _buildSearchBar(),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 6,
+                      mainAxisSpacing: 20,
+                      crossAxisSpacing: 20,
+                      childAspectRatio: 0.8,
+                    ),
+                    itemCount: 18, // Number of apps
+                    itemBuilder: (context, index) {
+                      final apps = [
+                        {'icon': Icons.terminal, 'label': 'Terminal'},
+                        {'icon': Icons.web, 'label': 'Browser'},
+                        {'icon': Icons.folder, 'label': 'Files'},
+                        {'icon': Icons.mail, 'label': 'Mail'},
+                        {'icon': Icons.chat, 'label': 'Chat'},
+                        {'icon': Icons.settings, 'label': 'Settings'},
+                        {'icon': Icons.camera, 'label': 'Camera'},
+                        {'icon': Icons.music_note, 'label': 'Music'},
+                        {'icon': Icons.videocam, 'label': 'Videos'},
+                        {'icon': Icons.brush, 'label': 'Paint'},
+                        {'icon': Icons.calculate, 'label': 'Calculator'},
+                        {'icon': Icons.calendar_today, 'label': 'Calendar'},
+                        {'icon': Icons.games, 'label': 'Games'},
+                        {'icon': Icons.book, 'label': 'Books'},
+                        {'icon': Icons.movie, 'label': 'Movies'},
+                        {'icon': Icons.photo_library, 'label': 'Gallery'},
+                        {'icon': Icons.shop, 'label': 'Store'},
+                        {'icon': Icons.description, 'label': 'Notes'},
+                      ];
+                      return _buildAppIcon(
+                        context,
+                        apps[index]['icon'] as IconData,
+                        apps[index]['label'] as String,
+                      );
+                    },
+                  ),
+                ),
+              ),
+              _buildQuickActions(),
+            ],
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildSearchBar() {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      height: 40,
+      margin: const EdgeInsets.all(24),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      height: 50,
       decoration: BoxDecoration(
-        color: Colors.white10,
-        borderRadius: BorderRadius.circular(20),
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(25),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.2),
+          width: 1,
+        ),
       ),
       child: const Row(
         children: [
           Icon(Icons.search, color: Colors.white70),
-          SizedBox(width: 8),
+          SizedBox(width: 16),
           Expanded(
             child: TextField(
               style: TextStyle(color: Colors.white),
@@ -256,51 +345,80 @@ class StartMenu extends StatelessWidget {
     );
   }
 
-  Widget _buildAppGrid() {
-    // Simple placeholder grid
-    return GridView.count(
-      crossAxisCount: 4,
-      shrinkWrap: true,
-      children: [
-        _buildGridIcon(Icons.web, 'Browser'),
-        _buildGridIcon(Icons.folder, 'Files'),
-        // ...add more icons as needed...
-      ],
-    );
-  }
-
-  Widget _buildGridIcon(IconData icon, String label) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(icon, color: Colors.white, size: 32),
-        const SizedBox(height: 4),
-        Text(label, style: const TextStyle(color: Colors.white, fontSize: 12)),
-      ],
+  Widget _buildAppIcon(BuildContext context, IconData icon, String label) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.2),
+            width: 1,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: Colors.white, size: 40),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: const TextStyle(color: Colors.white, fontSize: 12),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _buildQuickActions() {
-    // Simple placeholder row
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: Colors.white.withOpacity(0.1),
+            width: 1,
+          ),
+        ),
+      ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildActionIcon(Icons.power_settings_new, 'Power'),
-          const SizedBox(width: 20),
-          _buildActionIcon(Icons.settings, 'Settings'),
+          Row(
+            children: [
+              _buildActionButton(Icons.account_circle, 'User'),
+              const SizedBox(width: 16),
+              _buildActionButton(Icons.settings, 'Settings'),
+            ],
+          ),
+          _buildActionButton(Icons.power_settings_new, 'Power'),
         ],
       ),
     );
   }
 
-  Widget _buildActionIcon(IconData icon, String label) {
-    return Column(
-      children: [
-        Icon(icon, color: Colors.white, size: 28),
-        Text(label, style: const TextStyle(color: Colors.white, fontSize: 12)),
-      ],
+  Widget _buildActionButton(IconData icon, String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.white, size: 20),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ],
+      ),
     );
   }
 }

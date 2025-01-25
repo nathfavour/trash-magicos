@@ -105,7 +105,7 @@ class _DesktopIconState extends State<_DesktopIcon>
             children: [
               // Use custom 3D folder icon asset
               Image.asset(
-                'assets/icons/folder_3d.png',
+                'assets/icons/foldericon',
                 width: 48,
                 height: 48,
                 fit: BoxFit.contain,
