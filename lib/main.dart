@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'desktop.dart';
+import 'theme.dart'; // Add this import
 
 void main() {
   runApp(const MagicOS());

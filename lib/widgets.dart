@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Ensure this import is present
 import 'dart:ui'; // Add this import for BackdropFilter
+import 'theme.dart'; // Add this import
 
 class DesktopBackground extends StatefulWidget {
   const DesktopBackground({super.key});
