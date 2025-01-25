@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'widgets.dart';
 import 'desktop_items.dart';
+import 'dart:ui'; // For ImageFilter
 
 class DesktopScreen extends StatefulWidget {
   const DesktopScreen({super.key});
@@ -58,6 +59,15 @@ class _DesktopScreenState extends State<DesktopScreen>
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Stack(
         children: [
+          // Only blur background when StartMenu is open
+          if (_isStartMenuOpen)
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                child: Container(color: Colors.black.withOpacity(0.3)),
+              ),
+            ),
+
           // Desktop area with animated transitions
           const Positioned.fill(
             child: DesktopBackground(),

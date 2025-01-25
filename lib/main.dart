@@ -15,6 +15,7 @@ class MagicOS extends StatelessWidget {
       title: 'MagicOS',
       debugShowCheckedModeBanner: false, // Remove debug banner
       theme: ThemeData(
+        useMaterial3: true, // Enable modern Material design
         primaryColor: const Color(0xFF8B0000),
         colorScheme: ColorScheme.dark(
           primary: const Color(0xFF8B0000),

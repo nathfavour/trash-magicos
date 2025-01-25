@@ -34,6 +34,18 @@ class DesktopItems extends StatelessWidget {
           label: 'Photo Gallery',
           position: Offset(screenWidth * 0.4, screenHeight * 0.6),
         ),
+        _buildDesktopIcon(
+          context,
+          icon: Icons.folder,
+          label: 'Projects',
+          position: Offset(screenWidth * 0.25, screenHeight * 0.3),
+        ),
+        _buildDesktopIcon(
+          context,
+          icon: Icons.folder,
+          label: 'Downloads',
+          position: Offset(screenWidth * 0.35, screenHeight * 0.45),
+        ),
         // Add more desktop items here within screen boundaries
       ],
     );
@@ -55,18 +67,17 @@ class DesktopItems extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 4,
-                    offset: Offset(2, 2),
-                  ),
-                ],
+                color: Colors.white.withOpacity(0.2), // Glassy effect
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.3),
+                  width: 1,
+                ),
               ),
               child: Icon(icon,
-                  size: 40, color: Theme.of(context).colorScheme.secondary),
+                  size: 36,
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.8)),
             ),
             const SizedBox(height: 4),
             Text(
